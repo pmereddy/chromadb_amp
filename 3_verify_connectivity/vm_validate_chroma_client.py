@@ -14,7 +14,6 @@ try:
         client = chromadb.HttpClient(host="localhost", port=port, ssl=False)
 except Exception as e:
     print(f"Exception instantiating client: {str(e)}")
-    exit(1)
 
 # Check public endpoints
 print(f"Heartbeat check: {client.heartbeat()}")
