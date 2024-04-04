@@ -2,14 +2,16 @@ import os
 import chromadb
 from chromadb.config import Settings
 
+
 try:
+    port=str(os.environ.get('CDSW_APP_PORT', 8000))
     if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
         user = os.environ.get('CHROMA_USER', 'admin')
         password = os.environ.get('CHROMA_PASSWORD', 'admin')
-        client = chromadb.HttpClient(
+        client = chromadb.HttpClient(host="localhost", port=port, ssl=False,
             settings=Settings(chroma_client_auth_provider="chromadb.auth.basic.BasicAuthClientProvider",chroma_client_auth_credentials=f"{user}:{password}"))
     else:
-        client = chromadb.HttpClient(host="localhost", port="8000", ssl=False)
+        client = chromadb.HttpClient(host="localhost", port=port, ssl=False)
 except Exception as e:
     print(f"Exception instantiating client: {str(e)}")
     exit(1)
