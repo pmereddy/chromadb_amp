@@ -10,8 +10,6 @@ if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
     with open("server.htpasswd", "w") as file:
         file.write(f"{user}:{hashed_password.decode()}\n")
     
-    result=subprocess.run(cmd, capture_output=True, shell=False)
-
     os.environ['CHROMA_SERVER_AUTH_CREDENTIALS_FILE'] = 'server.htpasswd'
     os.environ['CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER'] = 'chromadb.auth.providers.HtpasswdFileServerAuthCredentialsProvider'
     os.environ['CHROMA_SERVER_AUTH_PROVIDER'] = 'chromadb.auth.basic.BasicAuthServerProvider'
