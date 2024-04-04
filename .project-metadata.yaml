@@ -74,28 +74,11 @@ tasks:
     environment_variables:
       TASK_TYPE: START_APPLICATION
 
-
-  - type: run_session
-    name: Verify connectivity 
-    script: 3_verify_connectivity/vm_validate_chroma_client.py
-    short_summary: Verify connectivity 
-    long_summary: Verify connectivity with the selected configuration parameters
-    kernel: python3
-    cpu: 2
-    memory: 4
-
-  - type: start_application
-  - type: create_job
-    name: Populate sample embeddings
-    entity_label: chroma_vectordb_insert
-    script: 4_populate_chromadb/populate_sample_vectors.py
-    arguments: None
-    short_summary: Create job to push vectors with document embeddings to Chroma DB. 
-    cpu: 2
-    memory: 8
-    environment:
-      TASK_TYPE: CREATE/RUN_JOB
-
-  - type: run_job
-    entity_label: chroma_vectordb_insert
-    short_summary: Populate Chroma Vector DB with documents embeddings (This will only run if you set "POPULATE_SAMPLE_DATA" with "YES" as an environment variable.)
+#  - type: run_session
+#    name: Verify connectivity 
+#    script: 3_verify_connectivity/vm_validate_chroma_client.py
+#    short_summary: Verify connectivity 
+#    long_summary: Verify connectivity with the selected configuration parameters
+#    kernel: python3
+#    cpu: 2
+#    memory: 4
