@@ -1,13 +1,15 @@
 import subprocess
 import os
+import bcrypt
 
 if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
     user = os.environ.get('CHROMA_USER', 'admin')
     password = os.environ.get('CHROMA_PASSWORD', 'admin')
-    #cmd=f"/usr/sbin/htpasswd -Bbn {user} {password} > server.htpasswd"
-    #cmd = ["/usr/sbin/htpasswd", "-Bbn", f"{user}", f"{password}", ">", "server.htpasswd"]
-    cmd = ["/usr/sbin/htpasswd", "-Bbc", "server.htpasswd", f"{user}", f"{password}"]
-
+    #cmd = ["/usr/sbin/htpasswd", "-Bbc", "server.htpasswd", f"{user}", f"{password}"]
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    with open("server.htpasswd", "w") as file:
+        file.write(f"{user}:{hashed_password.decode()}\n")
+    
     result=subprocess.run(cmd, capture_output=True, shell=False)
 
     os.environ['CHROMA_SERVER_AUTH_CREDENTIALS_FILE'] = 'server.htpasswd'

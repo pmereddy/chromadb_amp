@@ -9,7 +9,7 @@ try:
         client = chromadb.HttpClient(
             settings=Settings(chroma_client_auth_provider="chromadb.auth.basic.BasicAuthClientProvider",chroma_client_auth_credentials=f"{user}:{password}"))
     else:
-        client = chromadb.HttpClient(host="localhost", port="8000", ssl=True)
+        client = chromadb.HttpClient(host="localhost", port="8000", ssl=False)
 except Exception as e:
     print(f"Exception instantiating client: {str(e)}")
     exit(1)
