@@ -1,0 +1,101 @@
+name: ChromaDB
+description: |
+  Host a ChromaDB server
+
+author: Cloudera Inc.
+specification_version: 1.0
+prototype_version: 1.0
+date: "2024-04-04"
+
+
+environment_variables:
+  COLLECTION_NAME:
+    default: "sample"
+    description: "Enter preferred collection name for Chroma DB to store document embeddings in."
+    required: false
+
+  POPULATE_SAMPLE_DATA:
+    default: "no"
+    description: "Populate sample document embeddings."
+    required: false
+
+  CHROMA_AUTH:
+    default: "true"
+    description: "Enable authentication on ChromaDB."
+    required: true
+
+  CHROMA_USER:
+    default: "admin"
+    description: "username for ChromaDB. Required only if CHROMA_AUTH is true"
+    required: true
+
+  CHROMA_PASSWORD:
+    default: "admin"
+    description: "Password for CHROMA_USER. Required only if CHROMA_AUTH is true"
+    required: true
+
+  CHROMA_LOG_LEVEL:
+    default: "INFO"
+    description: "ChromaDB server log level."
+    required: false
+
+
+runtimes:
+  - editor: JupyterLab
+    kernel: Python 3.10
+    edition: Standard
+
+tasks:
+  - type: run_session
+    name: Install Dependencies
+    script: 0_install_dependencies/vm_install_dependencies.py
+    short_summary: Install ChromaDB Dependencies
+    kernel: python3
+    cpu: 2
+    memory: 8
+    
+  - type: run_session
+    name: Setup and Configure Chroma Server
+    script: 1_configure_chromadb/configure_chroma.py
+    short_summary: Setup Chroma Server Vector DB
+    long_summary: Resolve sqlite dependency with python version and control logging in Chroma server package
+    kernel: python3
+    cpu: 2
+    memory: 4
+
+  - type: start_application
+    name: ChromaDB Server
+    subdomain: cml-chroma-server
+    script: 2_start_chromadb/vm_start_server.py
+    short_summary: Start ChromaDB Server
+    long_summary: Start ChromaDB Server. Remember to enable unauthenticated app access for external access to the UI.
+    cpu: 2
+    memory: 8
+    environment_variables:
+      TASK_TYPE: START_APPLICATION
+
+
+  - type: run_session
+    name: Verify connectivity 
+    script: 3_verify_connectivity/vm_validate_chroma_client.py
+    short_summary: Verify connectivity 
+    long_summary: Verify connectivity with the selected configuration parameters
+    kernel: python3
+    cpu: 2
+    memory: 4
+
+  - type: start_application
+  - type: create_job
+    name: Populate sample embeddings
+    entity_label: chroma_vectordb_insert
+    script: 4_populate_chromadb/populate_sample_vectors.py
+    arguments: None
+    short_summary: Create job to push vectors with document embeddings to Chroma DB. 
+    cpu: 2
+    memory: 8
+    environment:
+      TASK_TYPE: CREATE/RUN_JOB
+
+  - type: run_job
+    entity_label: chroma_vectordb_insert
+    short_summary: Populate Chroma Vector DB with documents embeddings (This will only run if you set "POPULATE_SAMPLE_DATA" with "YES" as an environment variable.)
