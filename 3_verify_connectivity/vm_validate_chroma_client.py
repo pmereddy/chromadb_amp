@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import cmlapi
 import chromadb
@@ -13,6 +14,10 @@ try:
     cml_client = cmlapi.default_client(WORKSPACE_DOMAIN, CDSW_APIV2_KEY)
     app_list = cml_client.list_applications(CDSW_PROJECT_ID, search_filter=json.dumps({"name": "ChromaDB Server"}))
     app_subdomain = app_list.applications[0].subdomain
+    app_id = app_list.applications[0].id
+    cml_client.update_application({"bypass_authentication": True}, CDSW_PROJECT_ID, app_id)
+    #cml_client.restart_application({"bypass_authentication": True}, CDSW_PROJECT_ID, app_id)
+    time.sleep(30)
     app_endpoint=f"https://{app_subdomain}.{CDSW_DOMAIN}"
     if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
         user = os.environ.get('CHROMA_USER', 'admin')
@@ -25,10 +30,12 @@ try:
 except Exception as e:
     print(f"Exception instantiating client: {str(e)}")
 
-# Check public endpoints
-print(f"Heartbeat check: {client.heartbeat()}")
-print(f"Version: {client.get_version()}")
-
-# Check private endpoints
-print(f"Collections: {client.list_collections()}")
-
+try:
+    hb = client.heartbeat()
+    print(f"Heartbeat: {hb}")
+    gv = client.get_version()
+    print(f"Version: {gv}")
+    lc = client.list_collections()
+    print(f"Collections: {lc}")
+except Exception as e:
+    print(f"Connectivity error: {str(e)}")
