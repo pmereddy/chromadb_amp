@@ -74,11 +74,11 @@ tasks:
     environment_variables:
       TASK_TYPE: START_APPLICATION
 
-#  - type: run_session
-#    name: Verify connectivity 
-#    script: 3_verify_connectivity/vm_validate_chroma_client.py
-#    short_summary: Verify connectivity 
-#    long_summary: Verify connectivity with the selected configuration parameters
-#    kernel: python3
-#    cpu: 2
-#    memory: 4
+  - type: run_session
+    name: Verify connectivity 
+    script: 3_verify_connectivity/vm_validate_chroma_client.py
+    short_summary: Verify connectivity 
+    long_summary: Verify connectivity with the selected configuration parameters
+    kernel: python3
+    cpu: 2
+    memory: 4
