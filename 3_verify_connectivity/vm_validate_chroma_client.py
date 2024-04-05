@@ -19,6 +19,8 @@ try:
     #cml_client.restart_application({"bypass_authentication": True}, CDSW_PROJECT_ID, app_id)
     time.sleep(30)
     app_endpoint=f"https://{app_subdomain}.{CDSW_DOMAIN}"
+    with open('/home/cdsw/chromadb.fqdn', 'w') as f:
+        f.write(app_endpoint)
     if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
         user = os.environ.get('CHROMA_USER', 'admin')
         password = os.environ.get('CHROMA_PASSWORD', 'admin')

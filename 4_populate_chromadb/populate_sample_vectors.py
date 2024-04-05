@@ -6,8 +6,16 @@ if os.getenv("POPULATE_SAMPLE_DATA").upper() == "YES":
     import chromadb
     from pathlib import Path
 
-    # chroma_client = chromadb.Client()
-    chroma_client = chromadb.PersistentClient(path="/home/cdsw/chroma-data")
+    with open('/home/cdsw/chromadb.fqdn', 'r') as file:
+        app_endpoint = file.readline()
+
+    if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
+        user = os.environ.get('CHROMA_USER', 'admin')
+        password = os.environ.get('CHROMA_PASSWORD', 'admin')
+        client = chromadb.HttpClient(host=app_endpoint, 
+            settings=Settings(chroma_client_auth_provider="chromadb.auth.basic.BasicAuthClientProvider",chroma_client_auth_credentials=f"{user}:{password}"))
+    else:
+        client = chromadb.HttpClient(host=app_endpoint)
 
     from chromadb.utils import embedding_functions
     EMBEDDING_MODEL_REPO = "sentence-transformers/all-mpnet-base-v2"
@@ -20,12 +28,12 @@ if os.getenv("POPULATE_SAMPLE_DATA").upper() == "YES":
 
     print(f"Getting '{COLLECTION_NAME}' as object...")
     try:
-        chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+        client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
         print("Success")
-        collection = chroma_client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+        collection = client.get_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
     except:
         print("Creating new collection...")
-        collection = chroma_client.create_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
+        collection = client.create_collection(name=COLLECTION_NAME, embedding_function=EMBEDDING_FUNCTION)
         print("Success")
 
     # Get latest statistics from index
@@ -56,7 +64,7 @@ if os.getenv("POPULATE_SAMPLE_DATA").upper() == "YES":
             return f.read()
 
     # Read KB documents in ./data directory and insert embeddings into Vector DB for each doc
-    doc_dir = '3_job-populate-vectordb/sample-data'
+    doc_dir = '4_populate_chromadb/sample-data'
     for file in Path(doc_dir).glob(f'**/*.txt'):
         print(file)
         with open(file, "r") as f: # Open file in read mode

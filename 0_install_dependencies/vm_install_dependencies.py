@@ -5,6 +5,7 @@ import subprocess
 packages = [
     ("chromadb", "0.4.15"),
     ("pysqlite3-binary", "0.5.2.post1"),
+    ("sentence-transformers", "2.2.2"),
 ]
 
 # Iterate over the packages and install them one by one
