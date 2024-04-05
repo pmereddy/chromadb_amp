@@ -22,7 +22,7 @@ try:
     if os.environ.get('CHROMA_AUTH', 'false').lower() == 'true':
         user = os.environ.get('CHROMA_USER', 'admin')
         password = os.environ.get('CHROMA_PASSWORD', 'admin')
-        print(f"u:{user}, p:{password}, h:{app_endpoint}, p:{port}")
+        print(f"u:{user}, p:{password}, h:{app_endpoint}")
         client = chromadb.HttpClient(host=app_endpoint, 
             settings=Settings(chroma_client_auth_provider="chromadb.auth.basic.BasicAuthClientProvider",chroma_client_auth_credentials=f"{user}:{password}"))
     else:
