@@ -28,7 +28,7 @@ fi
 CHROMA_LOG_LEVEL=${CHROMA_LOG_LEVEL:-'INFO'}
 if [ ${CHROMA_LOG_LEVEL}!='INFO' ]; then
 
-    echo "Chaing log level to ${CHROMA_LOG_LEVEL}."
+    echo "Change log level to ${CHROMA_LOG_LEVEL}."
     # Define the path to the YAML file
     yaml_file="/home/cdsw/.local/lib/${PYTHON_DIR}/site-packages/chromadb/log_config.yml"
 

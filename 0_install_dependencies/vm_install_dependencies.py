@@ -5,6 +5,8 @@ import subprocess
 packages = [
     ("chromadb", "0.4.15"),
     ("pysqlite3-binary", "0.5.2.post1"),
+    ("pydantic", None),
+    ("anyio", None),
     ("sentence-transformers", "2.2.2"),
 ]
 
